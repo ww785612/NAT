@@ -7,7 +7,27 @@ using namespace std;
 
 bool isMatch(string p, string s) 
 {
-    return 1;
+    vector<vector<bool>> matchMatrix(p.size()+1, vector<bool> (s.size()+1, false));
+    
+    matchMatrix[0][0] = true;
+    for(int ip=1; ip<=p.size(); ip++)
+    {
+        if(p[ip-1] == '*')
+        {
+            matchMatrix[ip][0] = matchMatrix[ip-1][0];
+        }
+    }
+    
+    for(int ip=1; ip<=p.size(); ip++)
+    {
+        for(int is=1; is<=s.size(); is++)
+        {
+            matchMatrix[ip][is] = (p[ip-1]=='*' && matchMatrix[ip-1][is]) || 
+                                    (p[ip-1]=='*' && matchMatrix[ip][is-1]) || 
+                                    ((p[ip-1] == s[is-1] || p[ip-1]=='?' || p[ip-1]=='*') && matchMatrix[ip-1][is-1]);
+        }
+    }
+    return matchMatrix[p.size()][s.size()];
 }
 
 int main() 
